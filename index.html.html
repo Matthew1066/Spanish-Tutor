@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutor de Español — Daily Spanish</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #ffffff;
+    --paper: #f7f5f1;
+    --ink: #2a2520;
+    --line: #e4ddd2;
+    --terracotta: #c4502c;
+    --ochre: #d89944;
+    --olive: #6b7355;
+    --sienna: #8b3a1f;
+    --shadow: rgba(42, 37, 32, 0.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Fraunces', Georgia, serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 15% 0%, rgba(196, 80, 44, 0.04) 0%, transparent 45%),
+      radial-gradient(circle at 85% 100%, rgba(107, 115, 85, 0.04) 0%, transparent 45%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  /* Header */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 32px;
+    animation: fadeUp 0.6s ease;
+  }
+
+  .brand {
+    font-weight: 800;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .brand em {
+    font-style: italic;
+    color: var(--terracotta);
+    font-weight: 400;
+  }
+  .tagline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--olive);
+    margin-top: 6px;
+  }
+  .counters {
+    display: flex;
+    gap: 14px;
+    align-items: flex-end;
+  }
+  .counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 14px;
+    min-width: 72px;
+    transition: transform 0.35s cubic-bezier(.34,1.56,.64,1), box-shadow 0.35s ease;
+  }
+  .counter.pulse {
+    transform: scale(1.06);
+    box-shadow: 0 4px 16px rgba(196, 80, 44, 0.18);
+  }
+  .counter .num {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--terracotta);
+    display: block;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .counter.words .num { color: var(--olive); }
+
+  /* Storage status banner */
+  .storage-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.4;
+    animation: fadeUp 0.5s ease;
+  }
+  .storage-banner.warn {
+    background: #fff4e6;
+    border-color: #f0c98a;
+  }
+  .storage-banner .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--olive);
+    flex-shrink: 0;
+  }
+  .storage-banner.warn .dot { background: var(--terracotta); }
+  .storage-banner .msg { flex: 1; }
+  .storage-banner .msg strong { font-weight: 600; }
+  .banner-x {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: var(--ink);
+    opacity: 0.5;
+    padding: 0 4px;
+    line-height: 1;
+  }
+  .banner-x:hover { opacity: 1; }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 32px;
+    background: var(--paper);
+    padding: 4px;
+    border-radius: 100px;
+    border: 1px solid var(--line);
+  }
+  .tab {
+    flex: 1;
+    padding: 12px 16px;
+    background: transparent;
+    border: none;
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: var(--ink);
+    transition: all 0.3s ease;
+  }
+  .tab.active {
+    background: var(--ink);
+    color: var(--cream);
+  }
+  .tab:not(.active):hover { background: rgba(42, 37, 32, 0.05); }
+
+  /* Section */
+  .section { animation: fadeUp 0.5s ease; }
+  .section-head {
+    margin-bottom: 28px;
+  }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--olive);
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-size: 44px;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .section-title em {
+    font-style: italic;
+    color: var(--terracotta);
+    font-weight: 400;
+  }
+  .section-sub {
+    margin-top: 12px;
+    font-size: 15px;
+    color: var(--ink);
+    opacity: 0.7;
+    max-width: 480px;
+    line-height: 1.5;
+  }
+
+  /* Word cards */
+  .cards { display: flex; flex-direction: column; gap: 14px; }
+
+  .card {
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 24px;
+    position: relative;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow: 0 1px 2px var(--shadow);
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(42, 37, 32, 0.08);
+    border-color: var(--ochre);
+  }
+  .card-num {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--olive);
+  }
+  .card-word {
+    font-size: 34px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .card-pos {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-top: 6px;
+  }
+  .card-phon {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--olive);
+    margin-top: 10px;
+  }
+  .card-mean {
+    font-size: 17px;
+    margin-top: 8px;
+    line-height: 1.4;
+  }
+  .card-example {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--line);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .card-example .es { font-style: italic; color: var(--sienna); }
+  .card-example .en { display: block; margin-top: 4px; opacity: 0.6; font-size: 13px; }
+
+  .speak {
+    position: absolute;
+    bottom: 18px;
+    right: 18px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 16px;
+  }
+  .speak:hover { background: var(--ochre); border-color: var(--ochre); transform: scale(1.08); }
+  .speak.playing { background: var(--terracotta); color: var(--cream); border-color: var(--terracotta); }
+
+  /* Quiz */
+  .quiz-card {
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 32px 28px;
+    margin-top: 8px;
+    box-shadow: 0 1px 2px var(--shadow);
+  }
+  .quiz-progress {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+  .pip {
+    flex: 1;
+    height: 4px;
+    border-radius: 4px;
+    background: var(--line);
+    transition: background 0.3s;
+  }
+  .pip.done { background: var(--olive); }
+  .pip.current { background: var(--terracotta); }
+
+  .quiz-prompt {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--olive);
+    margin-bottom: 14px;
+  }
+  .quiz-word {
+    font-size: 52px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 28px;
+  }
+  .quiz-word em {
+    font-style: italic;
+    color: var(--terracotta);
+  }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 18px;
+    text-align: left;
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--ink);
+  }
+  .option:hover:not(:disabled) {
+    background: var(--cream);
+    border-color: var(--ochre);
+    transform: translateX(4px);
+  }
+  .option.correct {
+    background: var(--olive);
+    color: var(--cream);
+    border-color: var(--olive);
+  }
+  .option.wrong {
+    background: var(--sienna);
+    color: var(--cream);
+    border-color: var(--sienna);
+  }
+  .option:disabled { cursor: default; }
+
+  .quiz-result {
+    text-align: center;
+    padding: 24px 8px;
+  }
+  .quiz-result h2 {
+    font-size: 56px;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .quiz-result h2 em { font-style: italic; color: var(--terracotta); }
+  .quiz-result .score {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--olive);
+    margin: 16px 0 24px;
+  }
+  .quiz-result .msg {
+    font-size: 18px;
+    font-style: italic;
+    color: var(--ink);
+    opacity: 0.75;
+    line-height: 1.4;
+    max-width: 400px;
+    margin: 0 auto 28px;
+  }
+
+  /* Button */
+  .btn {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--cream);
+    border: none;
+    border-radius: 100px;
+    padding: 14px 28px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn:hover { background: var(--terracotta); transform: translateY(-1px); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .btn-ghost:hover { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+  .btn-accent {
+    background: var(--terracotta);
+  }
+  .btn-accent:hover { background: var(--sienna); }
+  .btn:disabled, .btn-accent:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .btn:disabled:hover, .btn-accent:disabled:hover {
+    background: var(--ink);
+    transform: none;
+  }
+  .btn-accent:disabled:hover { background: var(--terracotta); }
+
+  /* Empty state */
+  .empty {
+    background: var(--paper);
+    border: 1px dashed var(--line);
+    border-radius: 20px;
+    padding: 48px 24px;
+    text-align: center;
+  }
+  .empty h3 {
+    font-size: 28px;
+    font-weight: 400;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .empty h3 em { font-style: italic; color: var(--terracotta); }
+  .empty p {
+    color: var(--ink);
+    opacity: 0.65;
+    margin-bottom: 24px;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  /* Stats */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 28px;
+  }
+  @media (max-width: 540px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+  }
+  .stat {
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 16px;
+    text-align: center;
+    box-shadow: 0 1px 2px var(--shadow);
+  }
+  .stat-num {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--terracotta);
+  }
+  .stat-lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.7;
+    margin-top: 8px;
+  }
+
+  /* Actions row */
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+
+  /* History */
+  .history-day {
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px var(--shadow);
+  }
+  .history-day h4 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .history-day .words {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--sienna);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .history-day .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--olive);
+    margin-top: 8px;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .stagger > * { animation: fadeUp 0.5s ease backwards; }
+  .stagger > *:nth-child(1) { animation-delay: 0.05s; }
+  .stagger > *:nth-child(2) { animation-delay: 0.12s; }
+  .stagger > *:nth-child(3) { animation-delay: 0.19s; }
+  .stagger > *:nth-child(4) { animation-delay: 0.26s; }
+  .stagger > *:nth-child(5) { animation-delay: 0.33s; }
+
+  @media (max-width: 480px) {
+    .section-title { font-size: 36px; }
+    .quiz-word { font-size: 42px; }
+    .card-word { font-size: 28px; }
+    .brand { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <div>
+      <div class="brand">Tutor de <em>Español</em></div>
+      <div class="tagline">Five words · Every day · Beginner</div>
+    </div>
+    <div class="counters">
+      <div class="counter words" id="wordsCounter">
+        <span class="num" id="wordsNum">0</span>
+        Words learnt
+      </div>
+      <div class="counter streak" id="streakCounter">
+        <span class="num" id="streakNum">0</span>
+        Day streak
+      </div>
+    </div>
+  </header>
+
+  <div class="storage-banner" id="storageBanner" style="display:none;">
+    <span class="dot"></span>
+    <span class="msg"></span>
+    <button class="banner-x" aria-label="Dismiss">×</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="today">Today</button>
+    <button class="tab" data-tab="quiz">Quiz</button>
+    <button class="tab" data-tab="history">History</button>
+  </div>
+
+  <!-- TODAY -->
+  <section class="section" id="tab-today">
+    <div class="section-head">
+      <div class="eyebrow" id="todayDate">—</div>
+      <h1 class="section-title">Today's <em>ten</em>.</h1>
+      <p class="section-sub">Tap a card to hear it. Read each word, say it aloud, and try it in the example. Come back tomorrow to test your memory — or request extra words if you're hungry for more.</p>
+    </div>
+    <div class="cards stagger" id="todayCards"></div>
+    <div class="actions">
+      <button class="btn btn-accent" id="moreWordsBtn">+ Add 5 more words</button>
+      <button class="btn" id="nextDayBtn">Get tomorrow's words →</button>
+      <button class="btn btn-ghost" id="resetBtn">Reset progress</button>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="section" id="tab-quiz" style="display:none;">
+    <div class="section-head">
+      <div class="eyebrow">Yesterday's recall</div>
+      <h1 class="section-title">Do you <em>remember</em>?</h1>
+      <p class="section-sub">Match each Spanish word to its meaning. One chance per question.</p>
+    </div>
+    <div id="quizContainer"></div>
+  </section>
+
+  <!-- HISTORY -->
+  <section class="section" id="tab-history" style="display:none;">
+    <div class="section-head">
+      <div class="eyebrow">Your journey</div>
+      <h1 class="section-title">Every <em>word</em>, every day.</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-num" id="stTotal">0</div><div class="stat-lbl">Lifetime learnt</div></div>
+      <div class="stat"><div class="stat-num" id="stSeen">0</div><div class="stat-lbl">Words seen</div></div>
+      <div class="stat"><div class="stat-num" id="stDays">0</div><div class="stat-lbl">Days studied</div></div>
+      <div class="stat"><div class="stat-num" id="stAcc">—</div><div class="stat-lbl">Quiz accuracy</div></div>
+    </div>
+    <div id="historyList" style="margin-top: 28px;"></div>
+  </section>
+
+</div>
+
+<script>
+// ===== WORD BANK: 115 beginner Spanish words =====
+// Curated for absolute beginners: high-frequency, useful, varied parts of speech.
+const WORD_BANK = [
+  // Day 1 - Greetings & basics
+  { es: "hola", phon: "OH-lah", pos: "interjection", en: "hello", ex: "Hola, ¿cómo estás?", exEn: "Hello, how are you?" },
+  { es: "gracias", phon: "GRAH-syahs", pos: "interjection", en: "thank you", ex: "Muchas gracias por tu ayuda.", exEn: "Thank you so much for your help." },
+  { es: "por favor", phon: "por fah-VOR", pos: "phrase", en: "please", ex: "Un café, por favor.", exEn: "A coffee, please." },
+  { es: "sí", phon: "SEE", pos: "adverb", en: "yes", ex: "Sí, me gusta mucho.", exEn: "Yes, I like it a lot." },
+  { es: "no", phon: "NOH", pos: "adverb", en: "no / not", ex: "No, no quiero más.", exEn: "No, I don't want any more." },
+
+  // Day 2 - People
+  { es: "amigo", phon: "ah-MEE-go", pos: "noun (m)", en: "friend (male)", ex: "Mi amigo vive aquí.", exEn: "My friend lives here." },
+  { es: "familia", phon: "fah-MEE-lyah", pos: "noun (f)", en: "family", ex: "Mi familia es grande.", exEn: "My family is big." },
+  { es: "madre", phon: "MAH-dreh", pos: "noun (f)", en: "mother", ex: "Mi madre cocina bien.", exEn: "My mother cooks well." },
+  { es: "padre", phon: "PAH-dreh", pos: "noun (m)", en: "father", ex: "Mi padre trabaja mucho.", exEn: "My father works a lot." },
+  { es: "niño", phon: "NEE-nyo", pos: "noun (m)", en: "child / boy", ex: "El niño está feliz.", exEn: "The child is happy." },
+
+  // Day 3 - Everyday verbs
+  { es: "ser", phon: "sehr", pos: "verb", en: "to be (permanent)", ex: "Soy estudiante.", exEn: "I am a student." },
+  { es: "estar", phon: "ehs-TAR", pos: "verb", en: "to be (state)", ex: "Estoy cansado.", exEn: "I am tired." },
+  { es: "tener", phon: "teh-NEHR", pos: "verb", en: "to have", ex: "Tengo dos hermanos.", exEn: "I have two siblings." },
+  { es: "hacer", phon: "ah-SEHR", pos: "verb", en: "to do / make", ex: "¿Qué haces?", exEn: "What are you doing?" },
+  { es: "ir", phon: "eer", pos: "verb", en: "to go", ex: "Voy al mercado.", exEn: "I'm going to the market." },
+
+  // Day 4 - Food
+  { es: "agua", phon: "AH-gwah", pos: "noun (f)", en: "water", ex: "Quiero agua fría.", exEn: "I want cold water." },
+  { es: "pan", phon: "pahn", pos: "noun (m)", en: "bread", ex: "El pan está caliente.", exEn: "The bread is hot." },
+  { es: "comida", phon: "ko-MEE-dah", pos: "noun (f)", en: "food / meal", ex: "La comida está lista.", exEn: "The food is ready." },
+  { es: "café", phon: "kah-FEH", pos: "noun (m)", en: "coffee", ex: "Tomo café por la mañana.", exEn: "I drink coffee in the morning." },
+  { es: "manzana", phon: "mahn-SAH-nah", pos: "noun (f)", en: "apple", ex: "Una manzana al día.", exEn: "An apple a day." },
+
+  // Day 5 - Numbers & time
+  { es: "uno", phon: "OO-no", pos: "number", en: "one", ex: "Solo tengo uno.", exEn: "I only have one." },
+  { es: "dos", phon: "dohs", pos: "number", en: "two", ex: "Dos cafés, por favor.", exEn: "Two coffees, please." },
+  { es: "hoy", phon: "oy", pos: "adverb", en: "today", ex: "Hoy es lunes.", exEn: "Today is Monday." },
+  { es: "mañana", phon: "mah-NYAH-nah", pos: "noun (f) / adv", en: "morning / tomorrow", ex: "Hasta mañana.", exEn: "See you tomorrow." },
+  { es: "ahora", phon: "ah-OH-rah", pos: "adverb", en: "now", ex: "Llego ahora.", exEn: "I'm arriving now." },
+
+  // Day 6 - Places
+  { es: "casa", phon: "KAH-sah", pos: "noun (f)", en: "house / home", ex: "Voy a casa.", exEn: "I'm going home." },
+  { es: "calle", phon: "KAH-yeh", pos: "noun (f)", en: "street", ex: "La calle está vacía.", exEn: "The street is empty." },
+  { es: "ciudad", phon: "syoo-DAHD", pos: "noun (f)", en: "city", ex: "Vivo en una ciudad grande.", exEn: "I live in a big city." },
+  { es: "tienda", phon: "TYEHN-dah", pos: "noun (f)", en: "store / shop", ex: "La tienda abre temprano.", exEn: "The store opens early." },
+  { es: "escuela", phon: "ehs-KWEH-lah", pos: "noun (f)", en: "school", ex: "Mi escuela está cerca.", exEn: "My school is nearby." },
+
+  // Day 7 - Adjectives
+  { es: "bueno", phon: "BWEH-no", pos: "adjective", en: "good", ex: "El libro es bueno.", exEn: "The book is good." },
+  { es: "malo", phon: "MAH-lo", pos: "adjective", en: "bad", ex: "Hace mal tiempo.", exEn: "The weather is bad." },
+  { es: "grande", phon: "GRAHN-deh", pos: "adjective", en: "big / large", ex: "Una casa grande.", exEn: "A big house." },
+  { es: "pequeño", phon: "peh-KEH-nyo", pos: "adjective", en: "small", ex: "Un perro pequeño.", exEn: "A small dog." },
+  { es: "bonito", phon: "bo-NEE-toh", pos: "adjective", en: "pretty / nice", ex: "Qué bonito día.", exEn: "What a nice day." },
+
+  // Day 8 - Feelings
+  { es: "feliz", phon: "feh-LEES", pos: "adjective", en: "happy", ex: "Estoy muy feliz.", exEn: "I am very happy." },
+  { es: "triste", phon: "TREES-teh", pos: "adjective", en: "sad", ex: "No estés triste.", exEn: "Don't be sad." },
+  { es: "cansado", phon: "kahn-SAH-doh", pos: "adjective", en: "tired", ex: "Estoy cansado hoy.", exEn: "I'm tired today." },
+  { es: "amor", phon: "ah-MOR", pos: "noun (m)", en: "love", ex: "El amor es bello.", exEn: "Love is beautiful." },
+  { es: "gusto", phon: "GOOS-toh", pos: "noun (m)", en: "pleasure / liking", ex: "Mucho gusto.", exEn: "Nice to meet you." },
+
+  // Day 9 - Common verbs
+  { es: "querer", phon: "keh-REHR", pos: "verb", en: "to want / love", ex: "Te quiero.", exEn: "I love you." },
+  { es: "poder", phon: "po-DEHR", pos: "verb", en: "to be able to", ex: "No puedo ahora.", exEn: "I can't right now." },
+  { es: "saber", phon: "sah-BEHR", pos: "verb", en: "to know (facts)", ex: "No sé la respuesta.", exEn: "I don't know the answer." },
+  { es: "ver", phon: "vehr", pos: "verb", en: "to see / watch", ex: "Veo la luna.", exEn: "I see the moon." },
+  { es: "decir", phon: "deh-SEER", pos: "verb", en: "to say / tell", ex: "Dime la verdad.", exEn: "Tell me the truth." },
+
+  // Day 10 - Colors
+  { es: "rojo", phon: "ROH-ho", pos: "adjective", en: "red", ex: "Un coche rojo.", exEn: "A red car." },
+  { es: "azul", phon: "ah-SOOL", pos: "adjective", en: "blue", ex: "El cielo es azul.", exEn: "The sky is blue." },
+  { es: "verde", phon: "VEHR-deh", pos: "adjective", en: "green", ex: "La hierba es verde.", exEn: "The grass is green." },
+  { es: "blanco", phon: "BLAHN-ko", pos: "adjective", en: "white", ex: "Nieve blanca.", exEn: "White snow." },
+  { es: "negro", phon: "NEH-gro", pos: "adjective", en: "black", ex: "Café negro, por favor.", exEn: "Black coffee, please." },
+
+  // Day 11 - Time of day
+  { es: "noche", phon: "NO-cheh", pos: "noun (f)", en: "night", ex: "Buenas noches.", exEn: "Good night." },
+  { es: "tarde", phon: "TAR-deh", pos: "noun (f) / adj", en: "afternoon / late", ex: "Llegas tarde.", exEn: "You're late." },
+  { es: "día", phon: "DEE-ah", pos: "noun (m)", en: "day", ex: "Buen día.", exEn: "Good day." },
+  { es: "semana", phon: "seh-MAH-nah", pos: "noun (f)", en: "week", ex: "La próxima semana.", exEn: "Next week." },
+  { es: "año", phon: "AH-nyo", pos: "noun (m)", en: "year", ex: "Feliz año nuevo.", exEn: "Happy new year." },
+
+  // Day 12 - Misc essentials
+  { es: "libro", phon: "LEE-bro", pos: "noun (m)", en: "book", ex: "Leo un libro.", exEn: "I'm reading a book." },
+  { es: "trabajo", phon: "trah-BAH-ho", pos: "noun (m)", en: "work / job", ex: "Voy al trabajo.", exEn: "I'm going to work." },
+  { es: "tiempo", phon: "TYEHM-po", pos: "noun (m)", en: "time / weather", ex: "No tengo tiempo.", exEn: "I don't have time." },
+  { es: "mucho", phon: "MOO-cho", pos: "adverb / adj", en: "a lot / much", ex: "Te quiero mucho.", exEn: "I love you a lot." },
+  { es: "poco", phon: "PO-ko", pos: "adverb / adj", en: "a little", ex: "Hablo poco español.", exEn: "I speak a little Spanish." },
+
+  // More family & people
+  { es: "hermano", phon: "ehr-MAH-no", pos: "noun (m)", en: "brother", ex: "Mi hermano es alto.", exEn: "My brother is tall." },
+  { es: "hermana", phon: "ehr-MAH-nah", pos: "noun (f)", en: "sister", ex: "Tengo una hermana.", exEn: "I have one sister." },
+  { es: "hijo", phon: "EE-ho", pos: "noun (m)", en: "son", ex: "Mi hijo tiene cinco años.", exEn: "My son is five years old." },
+  { es: "esposo", phon: "ehs-PO-so", pos: "noun (m)", en: "husband", ex: "Mi esposo cocina.", exEn: "My husband is cooking." },
+  { es: "gente", phon: "HEN-teh", pos: "noun (f)", en: "people", ex: "Hay mucha gente.", exEn: "There are a lot of people." },
+
+  // More everyday verbs
+  { es: "comer", phon: "ko-MEHR", pos: "verb", en: "to eat", ex: "Vamos a comer.", exEn: "Let's eat." },
+  { es: "beber", phon: "beh-BEHR", pos: "verb", en: "to drink", ex: "Bebo agua.", exEn: "I drink water." },
+  { es: "hablar", phon: "ah-BLAR", pos: "verb", en: "to speak", ex: "Hablo español.", exEn: "I speak Spanish." },
+  { es: "vivir", phon: "vee-VEER", pos: "verb", en: "to live", ex: "Vivo en Madrid.", exEn: "I live in Madrid." },
+  { es: "trabajar", phon: "trah-bah-HAR", pos: "verb", en: "to work", ex: "Trabajo en casa.", exEn: "I work at home." },
+
+  // More food
+  { es: "leche", phon: "LEH-cheh", pos: "noun (f)", en: "milk", ex: "Un vaso de leche.", exEn: "A glass of milk." },
+  { es: "queso", phon: "KEH-so", pos: "noun (m)", en: "cheese", ex: "Me gusta el queso.", exEn: "I like cheese." },
+  { es: "carne", phon: "KAR-neh", pos: "noun (f)", en: "meat", ex: "No como carne.", exEn: "I don't eat meat." },
+  { es: "fruta", phon: "FROO-tah", pos: "noun (f)", en: "fruit", ex: "La fruta es dulce.", exEn: "The fruit is sweet." },
+  { es: "huevo", phon: "WEH-vo", pos: "noun (m)", en: "egg", ex: "Un huevo frito.", exEn: "A fried egg." },
+
+  // Numbers continued
+  { es: "tres", phon: "trehs", pos: "number", en: "three", ex: "Tres amigos.", exEn: "Three friends." },
+  { es: "cuatro", phon: "KWAH-tro", pos: "number", en: "four", ex: "Cuatro perros.", exEn: "Four dogs." },
+  { es: "cinco", phon: "SEEN-ko", pos: "number", en: "five", ex: "Las cinco en punto.", exEn: "Five o'clock sharp." },
+  { es: "diez", phon: "dyehs", pos: "number", en: "ten", ex: "Diez minutos más.", exEn: "Ten more minutes." },
+  { es: "cien", phon: "syehn", pos: "number", en: "hundred", ex: "Cien pesos.", exEn: "One hundred pesos." },
+
+  // Animals & nature
+  { es: "perro", phon: "PEH-rro", pos: "noun (m)", en: "dog", ex: "El perro ladra.", exEn: "The dog is barking." },
+  { es: "gato", phon: "GAH-to", pos: "noun (m)", en: "cat", ex: "Mi gato duerme.", exEn: "My cat is sleeping." },
+  { es: "sol", phon: "sol", pos: "noun (m)", en: "sun", ex: "El sol brilla.", exEn: "The sun is shining." },
+  { es: "luna", phon: "LOO-nah", pos: "noun (f)", en: "moon", ex: "La luna llena.", exEn: "The full moon." },
+  { es: "flor", phon: "flor", pos: "noun (f)", en: "flower", ex: "Una flor roja.", exEn: "A red flower." },
+
+  // Question words
+  { es: "qué", phon: "keh", pos: "pronoun", en: "what", ex: "¿Qué es esto?", exEn: "What is this?" },
+  { es: "quién", phon: "kyehn", pos: "pronoun", en: "who", ex: "¿Quién eres?", exEn: "Who are you?" },
+  { es: "dónde", phon: "DOHN-deh", pos: "adverb", en: "where", ex: "¿Dónde vives?", exEn: "Where do you live?" },
+  { es: "cuándo", phon: "KWAHN-doh", pos: "adverb", en: "when", ex: "¿Cuándo llegas?", exEn: "When do you arrive?" },
+  { es: "cómo", phon: "KO-mo", pos: "adverb", en: "how", ex: "¿Cómo estás?", exEn: "How are you?" },
+
+  // Body
+  { es: "mano", phon: "MAH-no", pos: "noun (f)", en: "hand", ex: "Dame la mano.", exEn: "Give me your hand." },
+  { es: "ojo", phon: "O-ho", pos: "noun (m)", en: "eye", ex: "Tiene ojos azules.", exEn: "She has blue eyes." },
+  { es: "cabeza", phon: "kah-BEH-sah", pos: "noun (f)", en: "head", ex: "Me duele la cabeza.", exEn: "My head hurts." },
+  { es: "corazón", phon: "ko-rah-SOHN", pos: "noun (m)", en: "heart", ex: "Con todo mi corazón.", exEn: "With all my heart." },
+  { es: "pie", phon: "pyeh", pos: "noun (m)", en: "foot", ex: "Voy a pie.", exEn: "I'm going on foot." },
+
+  // Useful adjectives
+  { es: "nuevo", phon: "NWEH-vo", pos: "adjective", en: "new", ex: "Un coche nuevo.", exEn: "A new car." },
+  { es: "viejo", phon: "VYEH-ho", pos: "adjective", en: "old", ex: "Un amigo viejo.", exEn: "An old friend." },
+  { es: "fácil", phon: "FAH-seel", pos: "adjective", en: "easy", ex: "Es muy fácil.", exEn: "It's very easy." },
+  { es: "difícil", phon: "dee-FEE-seel", pos: "adjective", en: "difficult", ex: "El examen es difícil.", exEn: "The exam is difficult." },
+  { es: "rápido", phon: "RAH-pee-doh", pos: "adjective", en: "fast", ex: "Habla rápido.", exEn: "He talks fast." },
+
+  // Common nouns
+  { es: "coche", phon: "KO-cheh", pos: "noun (m)", en: "car", ex: "Mi coche es rojo.", exEn: "My car is red." },
+  { es: "puerta", phon: "PWEHR-tah", pos: "noun (f)", en: "door", ex: "Cierra la puerta.", exEn: "Close the door." },
+  { es: "ventana", phon: "vehn-TAH-nah", pos: "noun (f)", en: "window", ex: "Abre la ventana.", exEn: "Open the window." },
+  { es: "mesa", phon: "MEH-sah", pos: "noun (f)", en: "table", ex: "La mesa está lista.", exEn: "The table is set." },
+  { es: "silla", phon: "SEE-yah", pos: "noun (f)", en: "chair", ex: "Siéntate en la silla.", exEn: "Sit in the chair." },
+
+  // More verbs
+  { es: "dormir", phon: "dor-MEER", pos: "verb", en: "to sleep", ex: "Quiero dormir.", exEn: "I want to sleep." },
+  { es: "leer", phon: "leh-EHR", pos: "verb", en: "to read", ex: "Me gusta leer.", exEn: "I like to read." },
+  { es: "escribir", phon: "ehs-kree-BEER", pos: "verb", en: "to write", ex: "Escribo una carta.", exEn: "I'm writing a letter." },
+  { es: "escuchar", phon: "ehs-koo-CHAR", pos: "verb", en: "to listen", ex: "Escucho música.", exEn: "I listen to music." },
+  { es: "venir", phon: "veh-NEER", pos: "verb", en: "to come", ex: "Ven aquí.", exEn: "Come here." },
+
+  // Useful little words
+  { es: "aquí", phon: "ah-KEE", pos: "adverb", en: "here", ex: "Estoy aquí.", exEn: "I am here." },
+  { es: "allí", phon: "ah-YEE", pos: "adverb", en: "there", ex: "Tu libro está allí.", exEn: "Your book is there." },
+  { es: "siempre", phon: "SYEHM-preh", pos: "adverb", en: "always", ex: "Siempre llega tarde.", exEn: "He always arrives late." },
+  { es: "nunca", phon: "NOON-kah", pos: "adverb", en: "never", ex: "Nunca digo mentiras.", exEn: "I never tell lies." },
+  { es: "también", phon: "tahm-BYEHN", pos: "adverb", en: "also / too", ex: "Yo también.", exEn: "Me too." },
+];
+
+// ===== STORAGE =====
+const KEY = "spanishTutorState_v1";
+const PROBE_KEY = "spanishTutorProbe_v1";
+
+function storageAvailable() {
+  // Tests whether localStorage exists and accepts writes
+  try {
+    const test = "__t__" + Date.now();
+    localStorage.setItem(test, test);
+    const ok = localStorage.getItem(test) === test;
+    localStorage.removeItem(test);
+    return ok;
+  } catch (e) {
+    return false;
+  }
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      // Backward compatibility: ensure learntWords exists
+      if (!Array.isArray(parsed.learntWords)) parsed.learntWords = [];
+      return parsed;
+    }
+  } catch (e) {}
+  return {
+    dayIndex: 0,          // which day of words we're on (0 = first set)
+    lastVisit: null,      // ISO date string of last "day" load
+    history: [],          // [{ dayIndex, date, words: [...], quizScore: null|0-5 }]
+    quizDayIndex: null,   // which day's words to quiz on (null = none yet)
+    learntWords: [],      // unique Spanish words the user has answered correctly in a quiz
+  };
+}
+function saveState(s) {
+  try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {}
+}
+
+// Show a banner if storage isn't working, or a one-time confirmation if it is
+function showStorageBanner() {
+  const banner = document.getElementById('storageBanner');
+  const msg = banner.querySelector('.msg');
+  const dismissed = sessionStorage.getItem('bannerDismissed');
+
+  if (!storageAvailable()) {
+    banner.classList.add('warn');
+    msg.innerHTML = "<strong>Progress isn't saving here.</strong> This preview can't store data between sessions. Download this HTML file and open it in your browser to save your streak and learnt words.";
+    banner.style.display = 'flex';
+  } else if (!dismissed) {
+    // Probe with a counter so we can tell if we're in a fresh-each-time environment
+    const probeNow = Date.now();
+    let stored;
+    try { stored = localStorage.getItem(PROBE_KEY); } catch (e) {}
+    try { localStorage.setItem(PROBE_KEY, String(probeNow)); } catch (e) {}
+
+    if (stored && state.history.length > 0) {
+      // Storage is working and there's prior data — quietly affirm
+      msg.innerHTML = "<strong>Progress is being saved</strong> in this browser. Use the same browser to keep your streak going.";
+      banner.style.display = 'flex';
+    } else if (!stored) {
+      // First visit or sandboxed — give the heads-up
+      msg.innerHTML = "<strong>Tip:</strong> Progress saves to <em>this browser</em> only. Use the same browser each day, and don't clear site data.";
+      banner.style.display = 'flex';
+    }
+  }
+
+  banner.querySelector('.banner-x').addEventListener('click', () => {
+    banner.style.display = 'none';
+    try { sessionStorage.setItem('bannerDismissed', '1'); } catch (e) {}
+  });
+}
+
+let state = loadState();
+
+// Initialize first day if brand new
+const WORDS_PER_DAY = 10;
+
+function getWordsForDay(idx) {
+  const start = (idx * WORDS_PER_DAY) % WORD_BANK.length;
+  const words = [];
+  for (let i = 0; i < WORDS_PER_DAY; i++) {
+    words.push(WORD_BANK[(start + i) % WORD_BANK.length]);
+  }
+  return words;
+}
+
+// Get N more words for the current day, excluding any already in the day's set
+function getBonusWords(currentWords, n = 5) {
+  const usedToday = new Set(currentWords.map(w => w.es));
+  const seenEver = getAllSeenWords();
+
+  // Best: words never shown before, anywhere
+  const trulyNew = WORD_BANK.filter(w => !seenEver.has(w.es));
+  // Next best: words seen before but missed in quizzes (need review)
+  const learntSet = new Set(state.learntWords);
+  const needsReview = WORD_BANK.filter(w => !usedToday.has(w.es) && seenEver.has(w.es) && !learntSet.has(w.es));
+  // Last resort: any words not in today's set
+  const remaining = WORD_BANK.filter(w => !usedToday.has(w.es));
+
+  let pool;
+  if (trulyNew.length >= n) pool = trulyNew;
+  else if (trulyNew.length + needsReview.length >= n) pool = [...trulyNew, ...needsReview];
+  else pool = remaining;
+
+  // Shuffle and take n
+  const shuffled = pool.slice().sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, n);
+}
+
+function ensureTodayLogged() {
+  // If history is empty, log day 0 with the first fresh words
+  if (state.history.length === 0) {
+    state.history.push({
+      dayIndex: state.dayIndex,
+      date: todayStr(),
+      words: getFreshDailyWords(),
+      quizScore: null,
+    });
+    saveState(state);
+  }
+}
+
+function todayStr() {
+  const d = new Date();
+  return d.toISOString().slice(0, 10);
+}
+
+function formatDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+}
+
+// Returns a Set of every Spanish word the user has ever been shown across all days
+function getAllSeenWords() {
+  const seen = new Set();
+  for (const entry of state.history) {
+    for (const w of entry.words) {
+      seen.add(w.es);
+    }
+  }
+  return seen;
+}
+
+// Pick N fresh words for a new day, prioritising words never shown before
+function getFreshDailyWords(n = WORDS_PER_DAY) {
+  const seen = getAllSeenWords();
+  const unseen = WORD_BANK.filter(w => !seen.has(w.es));
+
+  if (unseen.length >= n) {
+    // Plenty of fresh material — just take the first N in bank order to preserve curated grouping
+    return unseen.slice(0, n);
+  }
+
+  // Bank is mostly or fully exhausted — start a recycle round
+  // Prefer words that were missed in past quizzes (weakest recall first)
+  const learnt = new Set(state.learntWords);
+  const missed = WORD_BANK.filter(w => seen.has(w.es) && !learnt.has(w.es));
+  const mastered = WORD_BANK.filter(w => seen.has(w.es) && learnt.has(w.es));
+
+  // Order: any remaining unseen, then missed words, then mastered (shuffled within each tier)
+  const shuffle = arr => arr.slice().sort(() => Math.random() - 0.5);
+  const ordered = [...unseen, ...shuffle(missed), ...shuffle(mastered)];
+  return ordered.slice(0, n);
+}
+
+// ===== SPEECH =====
+function speak(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'es-ES';
+  u.rate = 0.85;
+  u.pitch = 1;
+  // Try to pick a Spanish voice
+  const voices = window.speechSynthesis.getVoices();
+  const esVoice = voices.find(v => v.lang.startsWith('es'));
+  if (esVoice) u.voice = esVoice;
+  window.speechSynthesis.speak(u);
+}
+
+// Pre-load voices
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+}
+
+// ===== RENDER: TODAY =====
+function renderToday() {
+  ensureTodayLogged();
+  const currentEntry = state.history[state.history.length - 1];
+  const words = currentEntry.words;
+
+  document.getElementById('todayDate').textContent =
+    `Day ${currentEntry.dayIndex + 1} · ${formatDate(currentEntry.date)}`;
+
+  const container = document.getElementById('todayCards');
+  container.innerHTML = '';
+
+  words.forEach((w, i) => {
+    const total = words.length;
+    const idxStr = String(i + 1).padStart(2, '0');
+    const totalStr = String(total).padStart(2, '0');
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="card-num">${idxStr} / ${totalStr}</div>
+      <div class="card-word">${w.es}</div>
+      <div class="card-pos">${w.pos}</div>
+      <div class="card-phon">/ ${w.phon} /</div>
+      <div class="card-mean">${w.en}</div>
+      <div class="card-example">
+        <span class="es">"${w.ex}"</span>
+        <span class="en">${w.exEn}</span>
+      </div>
+      <button class="speak" aria-label="Pronounce">♪</button>
+    `;
+    const btn = card.querySelector('.speak');
+    const handleSpeak = (e) => {
+      e.stopPropagation();
+      btn.classList.add('playing');
+      speak(w.es);
+      setTimeout(() => btn.classList.remove('playing'), 1200);
+    };
+    btn.addEventListener('click', handleSpeak);
+    card.addEventListener('click', () => speak(w.es));
+    container.appendChild(card);
+  });
+
+  updateStreak();
+}
+
+function updateStreak() {
+  document.getElementById('streakNum').textContent = state.history.length;
+  document.getElementById('wordsNum').textContent = state.learntWords.length;
+}
+
+function pulseWordsCounter() {
+  const el = document.getElementById('wordsCounter');
+  if (!el) return;
+  el.classList.remove('pulse');
+  // Force reflow to restart animation
+  void el.offsetWidth;
+  el.classList.add('pulse');
+  setTimeout(() => el.classList.remove('pulse'), 400);
+}
+
+// ===== RENDER: QUIZ =====
+let quizState = null;
+
+function startQuiz() {
+  const container = document.getElementById('quizContainer');
+
+  // Find the most recent day with words to quiz on (the entry before the current one, if it exists)
+  // If only one day in history, quiz on that day's words
+  let quizEntry;
+  if (state.history.length >= 2) {
+    quizEntry = state.history[state.history.length - 2];
+  } else if (state.history.length === 1) {
+    quizEntry = state.history[0];
+  } else {
+    container.innerHTML = `
+      <div class="empty">
+        <h3>Nothing to <em>quiz</em> yet.</h3>
+        <p>Learn your first five words on the Today tab, then come back here to test your recall.</p>
+        <button class="btn" onclick="switchTab('today')">Go to today's words</button>
+      </div>`;
+    return;
+  }
+
+  // Build 5 questions: show Spanish, choose English meaning from 4 options
+  const correctWords = quizEntry.words;
+  const distractorPool = WORD_BANK.filter(w => !correctWords.find(cw => cw.es === w.es));
+
+  const questions = correctWords.map(word => {
+    const distractors = [];
+    const used = new Set();
+    while (distractors.length < 3) {
+      const pick = distractorPool[Math.floor(Math.random() * distractorPool.length)];
+      if (!used.has(pick.en)) {
+        used.add(pick.en);
+        distractors.push(pick.en);
+      }
+    }
+    const options = [...distractors, word.en].sort(() => Math.random() - 0.5);
+    return { word, options, answer: word.en };
+  });
+
+  quizState = {
+    questions,
+    current: 0,
+    correct: 0,
+    answered: [],
+    entry: quizEntry,
+  };
+
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  const container = document.getElementById('quizContainer');
+  const qs = quizState;
+
+  if (qs.current >= qs.questions.length) {
+    renderQuizResult();
+    return;
+  }
+
+  const q = qs.questions[qs.current];
+
+  const pips = qs.questions.map((_, i) => {
+    if (i < qs.current) return '<div class="pip done"></div>';
+    if (i === qs.current) return '<div class="pip current"></div>';
+    return '<div class="pip"></div>';
+  }).join('');
+
+  container.innerHTML = `
+    <div class="quiz-card">
+      <div class="quiz-progress">${pips}</div>
+      <div class="quiz-prompt">Question ${qs.current + 1} of ${qs.questions.length} · What does this mean?</div>
+      <div class="quiz-word">${q.word.es} <em>?</em></div>
+      <div class="options" id="opts"></div>
+    </div>
+  `;
+
+  const opts = container.querySelector('#opts');
+  q.options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.textContent = opt;
+    btn.addEventListener('click', () => handleAnswer(opt, btn));
+    opts.appendChild(btn);
+  });
+}
+
+function handleAnswer(chosen, btn) {
+  const qs = quizState;
+  const q = qs.questions[qs.current];
+  const allBtns = document.querySelectorAll('.option');
+  allBtns.forEach(b => b.disabled = true);
+
+  if (chosen === q.answer) {
+    btn.classList.add('correct');
+    qs.correct++;
+    // Add to learntWords if not already counted (unique words only)
+    if (!state.learntWords.includes(q.word.es)) {
+      state.learntWords.push(q.word.es);
+      saveState(state);
+      document.getElementById('wordsNum').textContent = state.learntWords.length;
+      pulseWordsCounter();
+    }
+  } else {
+    btn.classList.add('wrong');
+    allBtns.forEach(b => {
+      if (b.textContent === q.answer) b.classList.add('correct');
+    });
+  }
+  qs.answered.push({ word: q.word.es, chosen, correct: q.answer });
+
+  setTimeout(() => {
+    qs.current++;
+    renderQuizQuestion();
+  }, 1100);
+}
+
+function renderQuizResult() {
+  const qs = quizState;
+  const container = document.getElementById('quizContainer');
+  const total = qs.questions.length;
+  const pct = Math.round((qs.correct / total) * 100);
+
+  let msg;
+  if (qs.correct === total) msg = "Perfecto. Every word stuck.";
+  else if (pct >= 80) msg = "Casi perfecto — almost there.";
+  else if (pct >= 40) msg = "Buen trabajo. Review the ones you missed and try again tomorrow.";
+  else msg = "No pasa nada — revisit yesterday's words and the meanings will lock in.";
+
+  // Save score to history
+  const entryIndex = state.history.findIndex(h => h.dayIndex === qs.entry.dayIndex);
+  if (entryIndex !== -1) {
+    state.history[entryIndex].quizScore = qs.correct;
+    saveState(state);
+  }
+
+  container.innerHTML = `
+    <div class="quiz-card">
+      <div class="quiz-result">
+        <h2>${qs.correct}<em>/${qs.questions.length}</em></h2>
+        <div class="score">${pct}% recall</div>
+        <p class="msg">${msg}</p>
+        <button class="btn" onclick="startQuiz()">Try again</button>
+        <button class="btn btn-ghost" style="margin-left:8px;" onclick="switchTab('today')">Back to today</button>
+      </div>
+    </div>
+  `;
+}
+
+// ===== RENDER: HISTORY =====
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  if (state.history.length === 0) {
+    list.innerHTML = `<div class="empty"><h3>No <em>history</em> yet.</h3><p>Your daily word lists will appear here.</p></div>`;
+  } else {
+    list.innerHTML = state.history.slice().reverse().map(h => `
+      <div class="history-day">
+        <h4>Day ${h.dayIndex + 1} · ${formatDate(h.date)}</h4>
+        <div class="words">${h.words.map(w => w.es).join(' · ')}</div>
+        <div class="meta">${h.quizScore !== null ? `Quiz: ${h.quizScore}/${h.words.length}` : `${h.words.length} words · Not quizzed yet`}</div>
+      </div>
+    `).join('');
+  }
+
+  // Stats
+  const totalWords = state.learntWords.length;
+  const wordsSeen = getAllSeenWords().size;
+  const days = state.history.length;
+  const scored = state.history.filter(h => h.quizScore !== null);
+  const avgPct = scored.length === 0
+    ? '—'
+    : Math.round(
+        scored.reduce((sum, h) => sum + (h.quizScore / h.words.length), 0) / scored.length * 100
+      ) + '%';
+
+  document.getElementById('stTotal').textContent = totalWords;
+  document.getElementById('stSeen').textContent = wordsSeen;
+  document.getElementById('stDays').textContent = days;
+  document.getElementById('stAcc').textContent = avgPct;
+}
+
+// ===== TABS =====
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === name);
+  });
+  document.getElementById('tab-today').style.display = name === 'today' ? 'block' : 'none';
+  document.getElementById('tab-quiz').style.display = name === 'quiz' ? 'block' : 'none';
+  document.getElementById('tab-history').style.display = name === 'history' ? 'block' : 'none';
+
+  if (name === 'quiz') startQuiz();
+  if (name === 'history') renderHistory();
+  if (name === 'today') renderToday();
+}
+
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => switchTab(t.dataset.tab));
+});
+
+// ===== ACTIONS =====
+document.getElementById('moreWordsBtn').addEventListener('click', () => {
+  const currentEntry = state.history[state.history.length - 1];
+  if (!currentEntry) return;
+
+  // If today's set already covers the whole bank, nothing left to add
+  if (currentEntry.words.length >= WORD_BANK.length) {
+    alert("You've already seen every word in the bank today. Get tomorrow's words to start a fresh round.");
+    return;
+  }
+
+  const bonus = getBonusWords(currentEntry.words, 5);
+  if (bonus.length === 0) {
+    alert("No more new words available today.");
+    return;
+  }
+
+  currentEntry.words = currentEntry.words.concat(bonus);
+  saveState(state);
+  renderToday();
+
+  // Scroll to the first new card so the user sees them
+  setTimeout(() => {
+    const cards = document.querySelectorAll('#todayCards .card');
+    const firstNew = cards[cards.length - bonus.length];
+    if (firstNew) firstNew.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 100);
+});
+
+document.getElementById('nextDayBtn').addEventListener('click', () => {
+  state.dayIndex++;
+  state.history.push({
+    dayIndex: state.dayIndex,
+    date: todayStr(),
+    words: getFreshDailyWords(),
+    quizScore: null,
+  });
+  saveState(state);
+  renderToday();
+  // Nudge them to the quiz
+  setTimeout(() => {
+    if (confirm("New words loaded! Want to quiz on yesterday's words now?")) {
+      switchTab('quiz');
+    }
+  }, 400);
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (confirm('Reset all progress? This clears your streak and history.')) {
+    state = {
+      dayIndex: 0,
+      lastVisit: null,
+      history: [],
+      quizDayIndex: null,
+      learntWords: [],
+    };
+    saveState(state);
+    renderToday();
+  }
+});
+
+// ===== INIT =====
+renderToday();
+showStorageBanner();
+</script>
+</body>
+</html>
